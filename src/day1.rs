@@ -1,7 +1,11 @@
-fn main() {
-    let input = include_str!("../../../data/day1");
-    println!("PART 1: {}", part1(input));
-    println!("PART 2: {}", part2(input));
+use aoc2023::fetch_input;
+
+#[tokio::main]
+async fn main() {
+    fetch_input(1).await.unwrap();
+    let input = std::fs::read_to_string("data/day1").unwrap();
+    println!("PART 1: {}", part1(&input));
+    println!("PART 2: {}", part2(&input));
 }
 
 fn part1(input: &str) -> usize {
