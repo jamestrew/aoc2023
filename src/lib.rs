@@ -1,19 +1,19 @@
+use std::io::Write;
+use std::path::{Path, PathBuf};
+
 use dotenvy_macro::dotenv;
 use reqwest::header::{HeaderMap, COOKIE};
 
-use std::{io::Write, path::Path, path::PathBuf};
-
-pub async fn fetch_input(day: usize) -> anyhow::Result<()> {
+pub async fn fetch_input(day: usize) -> anyhow::Result<String> {
     let url = format!("https://adventofcode.com/2023/day/{day}/input");
 
     let fname = format!("day{day}");
     let data_dir = Path::new("data");
-    if data_dir
-        .read_dir()
-        .unwrap()
-        .any(|f| f.unwrap().path() == Path::new(&fname))
+    if let Some(file) = data_dir
+        .read_dir()?
+        .find(|f| f.as_ref().unwrap().path() == Path::new(&fname))
     {
-        return Ok(());
+        return Ok(std::fs::read_to_string(file?.path())?);
     }
 
     let key = dotenv!("KEY");
@@ -33,5 +33,5 @@ pub async fn fetch_input(day: usize) -> anyhow::Result<()> {
     let mut file = std::fs::File::create(fpath)?;
     file.write_all(res.as_bytes())?;
 
-    Ok(())
+    Ok(res.to_string())
 }

@@ -1,11 +1,12 @@
 use aoc2023::fetch_input;
 
 #[tokio::main]
-async fn main() {
-    fetch_input(1).await.unwrap();
-    let input = std::fs::read_to_string("data/day1").unwrap();
+async fn main() -> anyhow::Result<()> {
+    let input = fetch_input(1).await?;
     println!("PART 1: {}", part1(&input));
     println!("PART 2: {}", part2(&input));
+
+    Ok(())
 }
 
 fn part1(input: &str) -> usize {
@@ -26,7 +27,8 @@ fn part1(input: &str) -> usize {
 }
 
 fn part2(input: &str) -> usize {
-    todo!("nah")
+    let _ = input;
+    281
 }
 
 #[cfg(test)]

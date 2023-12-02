@@ -1,0 +1,43 @@
+use aoc2023::fetch_input;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let input = fetch_input($$$).await?;
+    println!("PART 1: {}", part1(&input));
+    println!("PART 2: {}", part2(&input));
+
+    Ok(())
+}
+
+fn part1(input: &str) -> usize {
+    let _ = input;
+    $$$
+}
+
+fn part2(input: &str) -> usize {
+    let _ = input;
+    $$$
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn part1_sample() {
+        let input = "";
+        assert_eq!(part1(input), $$$);
+    }
+
+    #[test]
+    fn part2_sample() {
+        let input = "";
+        assert_eq!(part2(input), $$$);
+    }
+}
+
+
+=====
+[[bin]]
+name = "day$$$"
+path = "src/day$$$.rs"
