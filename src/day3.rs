@@ -28,7 +28,6 @@ struct NumPos {
 impl NumPos {
     fn new(row: usize, col_start: usize, nums: &[char]) -> Self {
         let num_str = nums.iter().collect::<String>();
-        println!("{num_str}");
         Self {
             row,
             col_rng: col_start..col_start + num_str.len(),
@@ -108,7 +107,6 @@ fn part1(input: &str) -> usize {
 
     let mut sum = 0;
 
-
     for symbol_neighbors in &symbols {
         for num in &mut nums {
             if num.counted {
@@ -128,9 +126,69 @@ fn part1(input: &str) -> usize {
     sum
 }
 
+fn gear_pos(schematic: &[Vec<char>]) -> Vec<Vec<Pos>> {
+    let mut gears = Vec::new();
+
+    let rows = schematic.len();
+    let cols = schematic.first().map_or(0, Vec::len);
+
+    for (row_num, row) in schematic.iter().enumerate() {
+        for (col_num, &ch) in row.iter().enumerate() {
+            if ch != '*' {
+                continue;
+            }
+            let mut gear_neighbors = Vec::new();
+            for dx in -1..=1 {
+                for dy in -1..=1 {
+                    let new_row = row_num as isize + dx;
+                    let new_col = col_num as isize + dy;
+
+                    if new_row >= 0
+                        && new_row < rows as isize
+                        && new_col >= 0
+                        && new_col < cols as isize
+                    {
+                        gear_neighbors.push(Pos(new_row as usize, new_col as usize));
+                    }
+                }
+            }
+            gears.push(gear_neighbors)
+        }
+    }
+
+    gears
+}
+
 fn part2(input: &str) -> usize {
-    let _ = input;
-    3
+    let schematic = create_schematic(input);
+    let mut nums = get_num_pos(&schematic);
+    let gears = gear_pos(&schematic);
+
+    let mut sum = 0;
+
+    for gear_neighbors in &gears {
+        let mut gear = None;
+        for num in &mut nums {
+            if num.counted {
+                continue;
+            }
+            for gear_neighbor in gear_neighbors {
+                if gear_neighbor.0 == num.row
+                    && num.col_rng.contains(&gear_neighbor.1)
+                    && !num.counted
+                {
+                    if let Some(tooth_count) = gear {
+                        sum += tooth_count * num.num;
+                    } else {
+                        gear = Some(num.num);
+                    }
+                    num.counted = true;
+                }
+            }
+        }
+    }
+
+    sum
 }
 
 #[cfg(test)]
@@ -244,7 +302,19 @@ $..
 
     #[test]
     fn part2_sample() {
-        let input = "";
-        assert_eq!(part2(input), 3);
+        let input = "
+467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598..
+"
+        .trim();
+        assert_eq!(part2(input), 467835);
     }
 }
