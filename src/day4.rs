@@ -70,22 +70,18 @@ fn part1(input: &str) -> usize {
         .sum()
 }
 
-fn calc_card(cards: &[Card], start_idx: usize, copy_count: usize) -> usize {
-    let mut count = 0;
-    cards[start_idx..start_idx + copy_count]
-        .iter()
-        .enumerate()
-        .for_each(|(idx, card)| {
-            let wins = card.winning_numbers().len();
-            count += 1;
-            count += calc_card(cards, start_idx + idx + 1, wins)
-        });
-    count
-}
-
 fn part2(input: &str) -> usize {
     let cards = Card::parse_cards(input);
-    calc_card(&cards, 0, cards.len())
+    let mut card_copies = vec![1; cards.len()];
+
+    for (i, card) in cards.iter().enumerate() {
+        let wins = card.winning_numbers().len();
+        for j in i + 1..std::cmp::min(i + 1 + wins, cards.len()) {
+            card_copies[j] += card_copies[i];
+        }
+    }
+
+    card_copies.iter().sum()
 }
 
 #[cfg(test)]
