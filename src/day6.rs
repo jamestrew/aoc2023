@@ -68,8 +68,24 @@ fn part1(input: &str) -> usize {
 }
 
 fn part2(input: &str) -> usize {
-    let _ = input;
-    6
+    let race_data = input
+        .lines()
+        .map(|line| {
+            line.split(':')
+                .nth(1)
+                .unwrap()
+                .replace(' ', "")
+                .parse::<usize>()
+                .unwrap()
+        })
+        .collect::<Vec<_>>();
+
+    let race = Race {
+        time: race_data[0],
+        record_distance: race_data[1],
+    };
+
+    race.good_race_strats()
 }
 
 #[cfg(test)]
@@ -88,7 +104,11 @@ Distance:  9  40  200
 
     #[test]
     fn part2_sample() {
-        let input = "".trim();
-        assert_eq!(part2(input), 6);
+        let input = "
+Time:      7  15   30
+Distance:  9  40  200
+"
+        .trim();
+        assert_eq!(part2(input), 71503);
     }
 }
